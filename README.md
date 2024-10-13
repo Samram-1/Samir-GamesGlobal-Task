@@ -61,7 +61,7 @@ Choose HTTP API and click Build.
 
 Configure your API:
 
-Name: LogManagementAPI.
+Name: logEntry and getEntry for second API you will create for the getEntry api.
 Click Next.
 Integrate your Lambda functions:
 
