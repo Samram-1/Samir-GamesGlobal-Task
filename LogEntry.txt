@@ -1,0 +1,33 @@
+// Load AWS SDK
+import AWS from 'aws-sdk';
+
+// Initialize DynamoDB DocumentClient
+const dynamoDb = new AWS.DynamoDB.DocumentClient();
+
+export const handler = async (event) => {
+  const { Severity, Message } = JSON.parse(event.body); // Parse the incoming data
+
+  const params = {
+    TableName: 'LogInfo', // DynamoDB table name
+    Item: {
+      id: Date.now(),
+      Severity,
+      Message,
+      DateTime: new Date().toISOString() // Add a timestamp
+    }
+  };
+
+  try {
+    await dynamoDb.put(params).promise(); // Write to DynamoDB
+    return {
+      statusCode: 201, // Created
+      body: JSON.stringify({ message: 'Log entry created successfully!' })
+    };
+  } catch (error) {
+    console.error("Error creating log entry:", error); // Log the error for debugging
+    return {
+      statusCode: 500,
+      body: JSON.stringify({ error: 'Failed to create log entry' })
+    };
+  }
+};

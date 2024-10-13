@@ -1,0 +1,28 @@
+// Load AWS SDK
+import AWS from 'aws-sdk';
+
+// Initialize DynamoDB DocumentClient
+const dynamoDb = new AWS.DynamoDB.DocumentClient();
+
+export const handler = async (event) => {
+  // Query DynamoDB to get the 100 most recent logs
+  const params = {
+    TableName: 'LogInfo', // DynamoDB table name
+    Limit: 100,           // Get 100 most recent
+    ScanIndexForward: false // Sort in descending order by DateTime
+  };
+
+  try {
+    const result = await dynamoDb.scan(params).promise(); // Read from DynamoDB
+    return {
+      statusCode: 200,
+      body: JSON.stringify(result.Items) // Return the logs as JSON
+    };
+  } catch (error) {
+    console.error("Error retrieving logs:", error); // Log the error for debugging
+    return {
+      statusCode: 500,
+      body: JSON.stringify({ error: 'Failed to retrieve logs' })
+    };
+  }
+};
